@@ -1,6 +1,6 @@
 # DSP Mods
 
-[InfiniteFoundations](./InfiniteFoundations/README.md)
+[InfiniteFoundations](./InfiniteFoundations/README.md) - download the mod on [thunderstore.io](https://dsp.thunderstore.io/package/squiddy/InfiniteFoundations/)
 
 ## Dev notes
 
