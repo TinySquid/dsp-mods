@@ -2,6 +2,8 @@
 
 [InfiniteFoundations](./InfiniteFoundations/README.md) - download the mod on [thunderstore.io](https://dsp.thunderstore.io/package/squiddy/InfiniteFoundations/)
 
+[AlterTheFog](./AlterTheFog/README.md) - download the mod on [thunderstore.io](https://dsp.thunderstore.io/package/squiddy/AlterTheFog/)
+
 ## Dev notes
 
 - [BepInEx ConfigFile](https://docs.bepinex.dev/articles/dev_guide/plugin_tutorial/4_configuration.html) class is an easy builtin way to save/read a mod config.
