@@ -34,40 +34,42 @@ namespace AlterTheFog
 
             harmony = new Harmony(PLUGIN_GUID);
 
-            ApplyPatch();
+            ApplyPatches();
         }
 
         public void OnDestroy()
         {
-            RevertPatch();
+            RevertPatches();
         }
 
         public void LoadConfig()
         {
             const string SECTION_KEY = "Difficulty";
             
-            aggressiveness = Config.Bind(SECTION_KEY, "aggressiveness", 1f, "");
+            aggressiveness = Config.Bind(SECTION_KEY, "aggressiveness", 1f, "Original ranges are -1 to 3");
 
-            initialLevel = Config.Bind(SECTION_KEY, "initialLevel", 1f, "");
-            initialGrowth = Config.Bind(SECTION_KEY, "initialGrowth", 1f, "");
-            initialColonize = Config.Bind(SECTION_KEY, "initialColonize", 1f, "");
-
-            maxDensity = Config.Bind(SECTION_KEY, "maxDensity", 1f, "");
+            initialLevel = Config.Bind(SECTION_KEY, "initialLevel", 0f, "Original ranges are 0 to 10");
+            initialGrowth = Config.Bind(SECTION_KEY, "initialGrowth", 1f, "Original ranges are 0 to 6");
+            initialColonize = Config.Bind(SECTION_KEY, "initialColonize", 1f, "Original ranges are 0 to 6");
+                
+            maxDensity = Config.Bind(SECTION_KEY, "maxDensity", 1f, "Original ranges are 0 to 4");
             
-            growthSpeedFactor= Config.Bind(SECTION_KEY, "growthSpeedFactor", 1f, "");
-            powerThreatFactor = Config.Bind(SECTION_KEY, "powerThreatFactor", 1f, "");
-            battleThreatFactor = Config.Bind(SECTION_KEY, "battleThreatFactor", 1f, "");
-            battleExpFactor = Config.Bind(SECTION_KEY, "battleExpFactor", 1f, "");
+            growthSpeedFactor= Config.Bind(SECTION_KEY, "growthSpeedFactor", 1f, "Original ranges are 0 to 4");
+            powerThreatFactor = Config.Bind(SECTION_KEY, "powerThreatFactor", 1f, "Original ranges are 0 to 8");
+            battleThreatFactor = Config.Bind(SECTION_KEY, "battleThreatFactor", 1f, "Original ranges are 0 to 8");
+            battleExpFactor = Config.Bind(SECTION_KEY, "battleExpFactor", 1f, "Original ranges are 0 to 8");
 
             Logger.LogInfo("Loaded configuration values.");
         }
 
-        public void ApplyPatch()
+        public void ApplyPatches()
         {
             try
             {
-                harmony.PatchAll(typeof(PatchDarkFogSettings));
-                Logger.LogInfo("Patch applied!");
+                harmony.PatchAll(typeof(PatchDarkFogDefault));
+                harmony.PatchAll(typeof(PatchDarkFogExport));
+
+                Logger.LogInfo("Patches applied!");
             }
             catch (Exception e)
             {
@@ -75,13 +77,13 @@ namespace AlterTheFog
             }
         }
 
-        public void RevertPatch()
+        public void RevertPatches()
         {
             harmony.UnpatchSelf();
         }
 
         [HarmonyPatch(typeof(CombatSettings), nameof(CombatSettings.SetDefault))]
-        // For new game starts it will use our configured plugin values and ignore the in-game setting
+        // For new game starts it will use our configured plugin values
         class PatchDarkFogDefault
         {
             public static bool Prefix(ref CombatSettings __instance)
@@ -102,7 +104,7 @@ namespace AlterTheFog
 
         // For existing saves we have to override the export method so the next save write will reflect our plugin values on reload
         [HarmonyPatch(typeof(CombatSettings), nameof(CombatSettings.Export))]
-        class PatchDarkFogSettings
+        class PatchDarkFogExport
         {
             public static bool Prefix(BinaryWriter w)
             {
